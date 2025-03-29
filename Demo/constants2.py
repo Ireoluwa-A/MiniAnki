@@ -35,6 +35,7 @@ RESPONSE_MEDIUM = 2
 RESPONSE_HARD = 3
 DEFAULT_RESPONSE = RESPONSE_HARD
 
+EINK_REFRESH_INTERVAL_SEC = 180  # Time between E-Ink refreshes
 
 # NeoPixel settings
 
