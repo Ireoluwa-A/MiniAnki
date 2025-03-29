@@ -1,0 +1,32 @@
+[
+  {
+    "hanzi": "你好",
+    "pinyin": "nǐ hǎo",
+    "english": "hello",
+    "part_of_speech": "greeting",
+    "example": "你好！很高兴认识你。",
+    "interval": 300,
+    "last_review": null,
+    "review_count": 5
+  },
+  {
+    "hanzi": "学习",
+    "pinyin": "xuéxí",
+    "english": "to study",
+    "part_of_speech": "verb",
+    "example": "我喜欢学习中文。",
+    "interval": 600,
+    "last_review": null,
+    "review_count": 3
+  },
+  {
+    "hanzi": "苹果",
+    "pinyin": "píngguǒ",
+    "english": "apple",
+    "part_of_speech": "noun",
+    "example": "这个苹果很好吃。",
+    "interval": 900,
+    "last_review": null,
+    "review_count": 2
+  }
+]
