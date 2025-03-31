@@ -36,17 +36,3 @@ RESPONSE_HARD = 3
 DEFAULT_RESPONSE = RESPONSE_HARD
 
 EINK_REFRESH_INTERVAL_SEC = 180  # Time between E-Ink refreshes
-
-# NeoPixel settings
-
-# Motion Detection and LED pins
-PIR_PIN = 16      # GP16
-LED_PIN = 17      # GP17
-NUM_PIXELS = 16   # Number of NeoPixels in the strip
-
-# Colors for LED feedback
-WARM_WHITE = (255, 80, 0)
-OFF_COLOR = (0, 0, 0)
-
-# Motion detection settings
-MOTION_TIMEOUT = 10

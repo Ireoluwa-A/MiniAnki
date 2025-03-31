@@ -4,7 +4,6 @@ import json
 import time
 import os
 
-
 class MiniAnkiCore:
 
     def get_next_card(self):

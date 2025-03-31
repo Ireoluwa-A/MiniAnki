@@ -5,15 +5,12 @@ Manages display initialization, refresh timing, and content rendering
 
 import time
 import board
-import busio
 import displayio
+import busio
 import adafruit_ssd1680
-import sdcardio
-import storage
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
-import os
-from MiniAnki.Constants import *
+from Utils.Constants import *
 
 class EInkDisplay:
     def __init__(self, min_refresh_interval=EINK_REFRESH_INTERVAL_SEC):
@@ -27,9 +24,9 @@ class EInkDisplay:
         # Initialize the display
         self._initialize_display()
         
-        if self.display:
-            # Show startup screen
-            self._show_startup_screen()
+        self._load_font()
+        
+        # self._show_startup_screen()
     
     def _initialize_display(self):
         """Initialize the e-ink display hardware"""
@@ -37,25 +34,16 @@ class EInkDisplay:
             # Release any existing displays
             displayio.release_displays()
             
-            # Setup SPI for display
-            spi = busio.SPI(
-                clock=getattr(board, f"GP{EINK_SCK_PIN}"), 
-                MOSI=getattr(board, f"GP{EINK_MOSI_PIN}")
-            )
-            
-            # Setup control pins
-            epd_cs = getattr(board, f"GP{EINK_CS_PIN}")
-            epd_dc = getattr(board, f"GP{EINK_DC_PIN}")
-            epd_reset = getattr(board, f"GP{EINK_RESET_PIN}")
-            epd_busy = getattr(board, f"GP{EINK_BUSY_PIN}")
+            # SPI1 setup (for e-ink display) - using direct pin assignments
+            spi_epd = busio.SPI(clock=board.GP10, MOSI=board.GP11)  
+            epd_cs = board.GP9
+            epd_dc = board.GP8
+            epd_reset = board.GP12
+            epd_busy = board.GP13
             
             # Create display bus
             display_bus = displayio.FourWire(
-                spi, 
-                command=epd_dc, 
-                chip_select=epd_cs, 
-                reset=epd_reset, 
-                baudrate=1000000
+                spi_epd, command=epd_dc, chip_select=epd_cs, reset=epd_reset, baudrate=1000000
             )
             
             # Initialize the display
@@ -72,9 +60,6 @@ class EInkDisplay:
             self.group = displayio.Group()
             self.display.root_group = self.group
             
-            # Load font
-            self._load_font()
-            
             print("E-ink display initialized successfully")
             return True
             
@@ -85,35 +70,10 @@ class EInkDisplay:
     def _load_font(self):
         """Load Chinese font from SD card"""
         try:
-            # Check if /sd is already mounted
-            try:
-                font_files = os.listdir("/sd")
-                print(f"SD card already mounted. Files: {font_files}")
-            except:
-                # Setup SD card if not mounted
-                print("Mounting SD card for font loading...")
-                sd_spi = busio.SPI(
-                    clock=getattr(board, f"GP{SPI_SCK_PIN}"), 
-                    MOSI=getattr(board, f"GP{SPI_MOSI_PIN}"), 
-                    MISO=getattr(board, f"GP{SPI_MISO_PIN}")
-                )
-                sd_cs = getattr(board, f"GP{SD_CS_PIN}")
-                
-                # Initialize and mount SD card
-                sdcard = sdcardio.SDCard(sd_spi, sd_cs)
-                vfs = storage.VfsFat(sdcard)
-                
-                try:
-                    storage.mount(vfs, "/sd")
-                    print("SD card mounted at /sd")
-                    font_files = os.listdir("/sd")
-                    print(f"SD card files: {font_files}")
-                except Exception as e:
-                    print(f"Error mounting SD card: {e}")
-            
-            # Load the font
+            # Assuming SD card is already mounted at /sd
+            print("Loading font...")
             self.font = bitmap_font.load_font("/sd/ChineseFont.bdf")
-            print("Chinese font loaded successfully")
+            print("Font loaded")
             
         except Exception as e:
             print(f"Error loading font: {e}")
@@ -192,11 +152,11 @@ class EInkDisplay:
     
     def show_card(self, card, show_answer=False):
         """Show a flashcard on the display"""
-        if not self.display or not self.font:
-            return False
         
-        sleep(time_until_refresh())
-
+        if not self.can_refresh():
+            wait_time = self.time_until_refresh()
+            time.sleep(wait_time)
+            
         # Clear the display
         self._clear_display()
             
@@ -249,17 +209,6 @@ class EInkDisplay:
         # Refresh the display
         return self.refresh()
     
-    def _show_cooldown_screen(self):
-        """Show cooldown information when display can't be refreshed yet"""
-        if not self.display or not self.font:
-            return False
-            
-        # Don't actually refresh the display, just show a message on console
-        wait_time = self.time_until_refresh()
-        
-        
-        return False
-        
     def cleanup(self):
         """Clean up resources"""
         try:

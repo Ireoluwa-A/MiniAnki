@@ -15,13 +15,14 @@ from MiniAnki.MiniAnkiCore import MiniAnkiCore
 class MiniAnki(MiniAnkiSetup, MiniAnkiCore):
     def __init__(self):
         """Initialize MiniAnki system"""            
+        self.setup_sd_card()
+        
         self.eink = EInkDisplay()
         self.button_manager = ButtonManager()
 
         self.cards = self.load_cards()
         self.last_shown = 0
 
-        self.setup_sd_card()
 
         print("MiniAnki initialized")
 
