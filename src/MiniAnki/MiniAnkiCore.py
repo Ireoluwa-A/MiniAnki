@@ -1,5 +1,6 @@
 from Utils.Constants import *
 import time
+import random
 
 class MiniAnkiCore:
 
@@ -7,9 +8,7 @@ class MiniAnkiCore:
         """Get the next card due for review"""
         current_time = time.monotonic()
         
-        if current_time - self.last_shown_card_time < MIN_SHOW_INTERVAL:
-            return None
-            
+        # Find cards that are due for review
         due_cards = [
             card for card in self.cards
             if card.last_review is None or 
@@ -19,7 +18,8 @@ class MiniAnkiCore:
         if not due_cards:
             print("No cards due for review")
             return None
-            
+        
+        # Find the most overdue card    
         most_overdue_card = None
         highest_overdue_factor = 0
         
@@ -30,9 +30,6 @@ class MiniAnkiCore:
             if overdue_factor > highest_overdue_factor:
                 highest_overdue_factor = overdue_factor
                 most_overdue_card = card
-        
-        if most_overdue_card:
-            print(f"Selected card: {most_overdue_card.hanzi} (Overdue factor: {highest_overdue_factor:.2f})")
         
         return most_overdue_card
 
@@ -70,3 +67,26 @@ class MiniAnkiCore:
         print(f"Card: {card.hanzi}, Response: {response}, Interval: {old_interval}s → {card.interval}s")
         self.save_cards()
         return card
+
+    def wait_for_next_card(self):
+        """
+        Wait a random time between MIN_SHOW_INTERVAL_SEC and MAX_SHOW_INTERVAL_SEC
+        before showing the next card. Returns immediately if any button is pressed.
+        
+        Returns:
+            bool: True if wait completed normally, False if interrupted by button press
+        """
+        # Calculate a random wait interval
+        wait_interval = random.randint(MIN_SHOW_INTERVAL_SEC, MAX_SHOW_INTERVAL_SEC)
+        print(f"Waiting {wait_interval} seconds before next card")
+        
+        # Wait for the interval, but check for button presses to skip wait
+        wait_start = time.monotonic()
+        while time.monotonic() - wait_start < wait_interval:
+            # Check if any button is pressed to skip waiting
+            if self.button_manager.is_any_button_pressed():
+                print("Button pressed - skipping wait")
+                return False  # Wait was interrupted
+            time.sleep(0.5)  # Short sleep to prevent CPU overuse
+        
+        return True  # Wait completed normally

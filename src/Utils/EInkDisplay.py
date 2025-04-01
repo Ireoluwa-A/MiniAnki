@@ -26,10 +26,8 @@ class EInkDisplay:
     def _initialize_display(self):
         """Initialize the e-ink display hardware"""
         try:
-            # Release any existing displays
             displayio.release_displays()
             
-            # SPI setup using constants from Constants.py
             spi_epd = busio.SPI(clock=EINK_SCK_PIN, MOSI=EINK_MOSI_PIN)  
             
             # Create display bus
@@ -65,7 +63,7 @@ class EInkDisplay:
     def _load_font(self):
         """Load Chinese font from SD card"""
         try:
-            # Assuming SD card is already mounted at /sd
+            # Assuming SD card is already mounted
             print("Loading font...")
             self.font = bitmap_font.load_font(MANDARIN_FONT_PATH)
             print("Font loaded")
@@ -105,6 +103,7 @@ class EInkDisplay:
         # Clear the display
         self._clear_display()
         
+        # Create labels for the card
         question_label = label.Label(
             self.font, 
             text=card.hanzi, 
@@ -139,7 +138,6 @@ class EInkDisplay:
         else:
             self.group.append(question_label)
         
-        # Refresh the display
         return self.refresh()
     
     def cleanup(self):

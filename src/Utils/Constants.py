@@ -30,22 +30,14 @@ EINK_HEIGHT = 122
 EINK_ROTATION = 270  # Rotation for the display
 EINK_COLOR = 0xFF0000  # Highlight color for display
 
-
 # Time intervals for flashcard display
 # Minimum and maximum intervals for showing cards
-MIN_SHOW_INTERVAL = 5
-MAX_SHOW_INTERVAL = 10  
+MIN_SHOW_INTERVAL_SEC = 5 
+MAX_SHOW_INTERVAL_SEC = 10 
 
-# Spaced repetition intervals
-# MIN_INTERVAL = 5 * 60  # 5 minutes
-# MAX_INTERVAL = 30 * 24 * 60 * 60  # 30 days
 
 MIN_INTERVAL = 1  # 5 minutes
 MAX_INTERVAL = 10
-
-# Show intervals - time between showing cards
-# MIN_SHOW_INTERVAL = 5 * 60  # 5 minutes
-# MAX_SHOW_INTERVAL = 60 * 60  # 1 hour
 
 RESPONSE_TIMEOUT = 5  # Time user has to respond
 

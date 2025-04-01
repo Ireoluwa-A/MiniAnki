@@ -17,15 +17,17 @@ def main():
     try:
         # Main loop
         while True:
-            
+            # Get the next card to show
+            print("\nChecking for due cards...")
             card = mini_anki.get_next_card()
             
-            # If its time to show a card, show it
+            # If a card is due for review, show it
             if card:
-                # Show card to user
-                # Will block until display is ready
                 print(f"Showing card: {card.hanzi}")
                 mini_anki.show_card(card)
+
+                print(f"Waiting for button press to reveal answer...")
+                mini_anki.button_manager.wait_for_any_button()
 
                 print(f"Revealing Card: {card.pinyin}")
                 mini_anki.reveal_card(card)
@@ -36,7 +38,9 @@ def main():
                 # Process response
                 print(f"Processing response: {response}")
                 mini_anki.process_response(card, response)
-
+                
+                # Wait before showing the next card
+                mini_anki.wait_for_next_card()
 
     except KeyboardInterrupt:
         print("\n\nUser interrupted - exiting")
@@ -47,6 +51,3 @@ def main():
         print("\nCleaning up before exit...")
         mini_anki.cleanup()
         print("\n----- MiniAnki Shutdown Complete -----")
-
-if __name__ == "__main__":
-    main()
