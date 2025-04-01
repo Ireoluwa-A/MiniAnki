@@ -12,9 +12,9 @@ from MiniAnki.ButtonManager import ButtonManager
 class MiniAnki:
     def __init__(self, flashcards_path=FLASHCARDS_PATH, use_eink=True, use_buttons=True):
         """Initialize MiniAnki system"""
-        self.flashcards_path = flashcards_path
+        FLASHCARDS_PATH = flashcards_path
         self.cards = []
-        self.last_shown = 0
+        self.last_shown_card_time = 0
         self.use_eink = use_eink
         self.use_buttons = use_buttons
         
@@ -54,12 +54,12 @@ class MiniAnki:
     def load_cards(self):
         """Load flashcards from JSON file"""
         try:
-            if not os.path.exists(self.flashcards_path):
-                print(f"Warning: Flashcards file not found at {self.flashcards_path}")
+            if not os.path.exists(FLASHCARDS_PATH):
+                print(f"Warning: Flashcards file not found at {FLASHCARDS_PATH}")
                 self.cards = []
                 return
                 
-            with open(self.flashcards_path, "r") as f:
+            with open(FLASHCARDS_PATH, "r") as f:
                 data = json.load(f)
                 self.cards = [Flashcard(**card) for card in data]
                 print(f"Loaded {len(self.cards)} flashcards")
@@ -72,9 +72,9 @@ class MiniAnki:
         """Save flashcards to JSON file"""
         try:
             # Create parent directories if they don't exist
-            os.makedirs(os.path.dirname(self.flashcards_path), exist_ok=True)
+            os.makedirs(os.path.dirname(FLASHCARDS_PATH), exist_ok=True)
             
-            with open(self.flashcards_path, "w") as f:
+            with open(FLASHCARDS_PATH, "w") as f:
                 json.dump([card.to_dict() for card in self.cards], f, indent=2)
             print(f"Saved {len(self.cards)} flashcards")
             
@@ -89,7 +89,7 @@ class MiniAnki:
             card.interval = MIN_INTERVAL
             card.review_count = 0
         
-        self.last_shown = 0
+        self.last_shown_card_time = 0
         self.save_cards()
         print("All cards have been reset")
     
@@ -98,7 +98,7 @@ class MiniAnki:
         current_time = time.monotonic()
         
         # Check if minimum time has passed since last card was shown
-        if current_time - self.last_shown < MIN_SHOW_INTERVAL:
+        if current_time - self.last_shown_card_time < MIN_SHOW_INTERVAL:
             return None
             
         # Get cards that are due for review
@@ -159,7 +159,7 @@ class MiniAnki:
         # Update card stats
         card.last_review = time.monotonic()
         card.review_count += 1
-        self.last_shown = time.monotonic()
+        self.last_shown_card_time = time.monotonic()
         
         # Log the change
         print(f"Card: {card.hanzi}, Response: {quality}, Interval: {old_interval}s → {card.interval}s")

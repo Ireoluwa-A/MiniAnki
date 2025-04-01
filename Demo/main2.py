@@ -21,7 +21,7 @@ def main():
                     if quality is not None:
                         card = anki.process_response(card, quality)
             else: 
-                anki.last_shown = time.monotonic()
+                anki.last_shown_card_time = time.monotonic()
             time.sleep(0.1)
 
     except Exception as e:
