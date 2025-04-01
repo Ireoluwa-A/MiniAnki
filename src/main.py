@@ -17,8 +17,6 @@ def main():
     try:
         # Main loop
         while True:
-
-            print("System active - checking for due cards")
             
             card = mini_anki.get_next_card()
             

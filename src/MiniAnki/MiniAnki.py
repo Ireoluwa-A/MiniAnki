@@ -21,7 +21,7 @@ class MiniAnki(MiniAnkiSetup, MiniAnkiCore):
         self.button_manager = ButtonManager()
 
         self.cards = self.load_cards()
-        self.last_shown = 0
+        self.last_shown_card_time = 0
 
 
         print("MiniAnki initialized")

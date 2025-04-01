@@ -1,8 +1,5 @@
 from Utils.Constants import *
 import time
-import json
-import time
-import os
 
 class MiniAnkiCore:
 
@@ -10,7 +7,7 @@ class MiniAnkiCore:
         """Get the next card due for review"""
         current_time = time.monotonic()
         
-        if current_time - self.last_shown < MIN_SHOW_INTERVAL:
+        if current_time - self.last_shown_card_time < MIN_SHOW_INTERVAL:
             return None
             
         due_cards = [
@@ -68,7 +65,7 @@ class MiniAnkiCore:
         
         card.last_review = time.monotonic()
         card.review_count += 1
-        self.last_shown = time.monotonic()
+        self.last_shown_card_time = time.monotonic()
         
         print(f"Card: {card.hanzi}, Response: {response}, Interval: {old_interval}s → {card.interval}s")
         self.save_cards()
