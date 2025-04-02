@@ -48,9 +48,9 @@ class MiniAnkiCore:
     def process_response(self, card, response):
         """Process response quality (1=Easy, 2=Medium, 3=Hard)"""
         multipliers = {
-            RESPONSE_EASY: 2.0,
-            RESPONSE_MEDIUM: 1.3,
-            RESPONSE_HARD: 0.5
+            RESPONSE_EASY: RESPONSE_EASY_MULTIPLIER,
+            RESPONSE_MEDIUM: RESPONSE_MEDIUM_MULTIPLIER,
+            RESPONSE_HARD: RESPONSE_HARD_MULTIPLIER
         }
 
         old_interval = card.interval

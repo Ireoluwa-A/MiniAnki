@@ -16,6 +16,11 @@ SD_MOSI_PIN = board.GP11
 SD_MISO_PIN = board.GP12
 SD_CS_PIN = board.GP13
 
+# Button configuration
+BUTTON_EASY_PIN = board.GP21
+BUTTON_MEDIUM_PIN = board.GP20
+BUTTON_HARD_PIN = board.GP19
+
 # E-Ink display configuration
 EINK_SCK_PIN = board.GP10
 EINK_MOSI_PIN = board.GP11
@@ -31,18 +36,25 @@ EINK_ROTATION = 270  # Rotation for the display
 EINK_COLOR = 0xFF0000  # Highlight color for display
 
 # Time intervals for flashcard display
-# Minimum and maximum intervals for showing cards
+# Minimum and maximum intervals for displaying any cards
 MIN_SHOW_INTERVAL_SEC = 5 
 MAX_SHOW_INTERVAL_SEC = 10 
 
+# Spaced repetition intervals (in seconds)
+# Minimum and maximum intervals assigned to cards
+# after a review. These intervals are used to determine how long to wait
+# before showing particular card again
+MIN_INTERVAL = 60 * 5 # minutes
+MAX_INTERVAL = 60 * 60 * 24 * 30 # days
 
-MIN_INTERVAL = 1  # 5 minutes
-MAX_INTERVAL = 10
-
-RESPONSE_TIMEOUT = 5  # Time user has to respond
-
+# Spaced Repition settings
 RESPONSE_EASY = 1
 RESPONSE_MEDIUM = 2
 RESPONSE_HARD = 3
 DEFAULT_RESPONSE = RESPONSE_HARD
+# Weights that affect how long to wait before showing the card again
+# These are multipliers for the intervals based on user response
+RESPONSE_EASY_MULTIPLIER = 2.0
+RESPONSE_MEDIUM_MULTIPLIER = 1.3
+RESPONSE_HARD_MULTIPLIER = 0.5
 
