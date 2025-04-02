@@ -3,14 +3,10 @@ Core MiniAnki class to manage flashcards and spaced repetition
 """
 
 from Utils.Constants import *
-
-
 from Utils.EInkDisplay import EInkDisplay
 from Utils.ButtonManager import ButtonManager
-
-
-from MiniAnki.MiniAnkiSetup import MiniAnkiSetup
-from MiniAnki.MiniAnkiCore import MiniAnkiCore
+from .MiniAnkiSetup import MiniAnkiSetup
+from .MiniAnkiCore import MiniAnkiCore
 
 class MiniAnki(MiniAnkiSetup, MiniAnkiCore):
     def __init__(self):

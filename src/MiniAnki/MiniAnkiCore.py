@@ -9,6 +9,7 @@ class MiniAnkiCore:
         current_time = time.monotonic()
         
         # Find cards that are due for review
+        print("all cards: ", self.cards)
         due_cards = [
             card for card in self.cards
             if card.last_review is None or 
@@ -35,6 +36,7 @@ class MiniAnkiCore:
 
     def show_card(self, card):
         """Show the card on the display"""
+        print("e ink show card")
         self.eink.show_card(card, show_answer=False)
         
     def reveal_card(self, card):
@@ -45,6 +47,10 @@ class MiniAnkiCore:
         """Wait for user response using buttons"""
         return self.button_manager.wait_for_response()
 
+    def wait_for_any_button(self):
+        """Wait for any button press"""
+        self.button_manager.wait_for_any_button()
+        
     def process_response(self, card, response):
         """Process response quality (1=Easy, 2=Medium, 3=Hard)"""
         multipliers = {
@@ -55,10 +61,10 @@ class MiniAnkiCore:
 
         old_interval = card.interval
 
-        if card.review_count == 0:
-            card.interval = MIN_INTERVAL
-        else:
-            card.interval = min(MAX_INTERVAL, int(card.interval * multipliers[response]))
+        # if card.review_count == 0:
+        #     card.interval = MIN_INTERVAL
+        # else:
+        card.interval = min(MAX_INTERVAL, int(card.interval * multipliers[response]))
         
         card.last_review = time.monotonic()
         card.review_count += 1
@@ -68,7 +74,7 @@ class MiniAnkiCore:
         self.save_cards()
         return card
 
-    def wait_for_next_card(self):
+    def wait_for_random_interval(self, card):
         """
         Wait a random time between MIN_SHOW_INTERVAL_SEC and MAX_SHOW_INTERVAL_SEC
         before showing the next card. Returns immediately if any button is pressed.
@@ -82,11 +88,18 @@ class MiniAnkiCore:
         
         # Wait for the interval, but check for button presses to skip wait
         wait_start = time.monotonic()
+
+        question_label, pinyin_label, answer_label = self.eink.create_labels(card)
+        card.question_label = question_label
+        card.pinyin_label = pinyin_label
+        card.answer_label = answer_label
+
         while time.monotonic() - wait_start < wait_interval:
             # Check if any button is pressed to skip waiting
             if self.button_manager.is_any_button_pressed():
                 print("Button pressed - skipping wait")
                 return False  # Wait was interrupted
-            time.sleep(0.5)  # Short sleep to prevent CPU overuse
+            print(f"Elapsed time: {time.monotonic() - wait_start:.2f}s")
+            time.sleep(1)  # Short sleep to prevent CPU overuse
         
         return True  # Wait completed normally

@@ -17,19 +17,19 @@ class ButtonManager:
         
         """Initialize the buttons with given pin numbers"""
         self.debounce_time = debounce_time
-        
+
         # Setup easy button
-        self.easy_button = digitalio.DigitalInOut(getattr(board, f"GP{easy_pin}"))
+        self.easy_button = digitalio.DigitalInOut(BUTTON_EASY_PIN)
         self.easy_button.direction = digitalio.Direction.INPUT
         self.easy_button.pull = digitalio.Pull.UP
         
         # Setup medium button
-        self.medium_button = digitalio.DigitalInOut(getattr(board, f"GP{medium_pin}"))
+        self.medium_button = digitalio.DigitalInOut(BUTTON_MEDIUM_PIN)
         self.medium_button.direction = digitalio.Direction.INPUT
         self.medium_button.pull = digitalio.Pull.UP
         
         # Setup hard button
-        self.hard_button = digitalio.DigitalInOut(getattr(board, f"GP{hard_pin}"))
+        self.hard_button = digitalio.DigitalInOut(BUTTON_HARD_PIN)
         self.hard_button.direction = digitalio.Direction.INPUT
         self.hard_button.pull = digitalio.Pull.UP
         
@@ -41,15 +41,27 @@ class ButtonManager:
         """Check if any button is currently pressed"""
         return not self.easy_button.value or not self.medium_button.value or not self.hard_button.value
     
-    def wait_for_any_button(self):
-        """Wait until any button is pressed and released"""
+    def wait_for_any_button(self, timeout=RESPONSE_TIMEOUT_SEC):
+        """
+        Wait until any button is pressed and released, with a timeout
+        """
+        start_time = time.monotonic()
+        
         # Wait for all buttons to be released first
         while self.is_any_button_pressed():
             time.sleep(self.debounce_time)
+            if time.monotonic() - start_time > timeout:
+                print("Timeout waiting for buttons to be released")
+                return None
         
-        # Now wait for a button press
+        # Wait for a button press or timeout
         while not self.is_any_button_pressed():
             time.sleep(self.debounce_time)
+            
+            # Check for timeout
+            if time.monotonic() - start_time > timeout:
+                print("Timeout waiting for button press")
+                return "hard"  # Default to hard if timeout occurs
         
         # Wait for debounce
         time.sleep(self.debounce_time)

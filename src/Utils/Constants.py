@@ -7,14 +7,15 @@ import board
 # File paths
 SD_CARD_PATH = "/sd"
 MANDARIN_FONT_PATH = f"{SD_CARD_PATH}/ChineseFont.bdf"
-FLASHCARDS_PATH = f"{SD_CARD_PATH}/flashcards.json"
+# FLASHCARDS_PATH = f"/sd/flashcards2.json"
+FLASHCARDS_PATH = f"flashcardsbackup.json"
 ANKI_IMPORT_PATH = f"{SD_CARD_PATH}/anki_export.txt"
 
 # SD Card configuration
-SD_SCK_PIN = board.GP10
-SD_MOSI_PIN = board.GP11
-SD_MISO_PIN = board.GP12
-SD_CS_PIN = board.GP13
+SD_SCK_PIN = board.GP2
+SD_MOSI_PIN = board.GP3
+SD_MISO_PIN = board.GP4
+SD_CS_PIN = board.GP5
 
 # Button configuration
 BUTTON_EASY_PIN = board.GP21
@@ -58,3 +59,4 @@ RESPONSE_EASY_MULTIPLIER = 2.0
 RESPONSE_MEDIUM_MULTIPLIER = 1.3
 RESPONSE_HARD_MULTIPLIER = 0.5
 
+RESPONSE_TIMEOUT_SEC = 5  # Time to wait for user response

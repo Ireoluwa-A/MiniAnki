@@ -1,0 +1,42 @@
+[
+  {
+    "hanzi": "这",
+    "pinyin": "zhè",
+    "english": "this",
+    "part_of_speech": "preposition",
+    "example": "这是男厕所。",
+    "interval": 300,
+    "last_review": null,
+    "review_count": 0
+  },
+  {
+    "hanzi": "会",
+    "pinyin": "huì",
+    "english": "meet; can, able",
+    "part_of_speech": "verb",
+    "example": "你会说汉语吗？",
+    "interval": 300,
+    "last_review": null,
+    "review_count": 0
+  },
+  {
+    "hanzi": "吗",
+    "pinyin": "ma",
+    "english": "indicates a yes/no question (added to a statement)",
+    "part_of_speech": "modal particle",
+    "example": "她在吃饭吗？",
+    "interval": 300,
+    "last_review": null,
+    "review_count": 0
+  },
+  {
+    "hanzi": "什么",
+    "pinyin": "shénme",
+    "english": "what? (replaces the noun to turn a statement into a question)",
+    "part_of_speech": "pronoun",
+    "example": "那是什么东西？",
+    "interval": 300,
+    "last_review": null,
+    "review_count": 0
+  }
+]

@@ -5,11 +5,12 @@ import storage
 import adafruit_sdcard
 import json
 import os
+
 from Utils.Constants import *
 from Utils.Flashcard import Flashcard
 
 class MiniAnkiSetup:
-    def setup_sd_card():
+    def setup_sd_card(self):
         """
         Initialize the SD card
         
@@ -52,8 +53,9 @@ class MiniAnkiSetup:
         try:
             with open(FLASHCARDS_PATH, "r") as f:
                 data = json.load(f)
+                print("data", data)
                 cards = [Flashcard(**card) for card in data]
-                print(f"Loaded {len(self.cards)} flashcards")
+                print(f"Loaded {len(cards)} flashcards")
                 return cards
                 
         except Exception as e:
@@ -73,11 +75,22 @@ class MiniAnkiSetup:
     def save_cards(self):
         """Save flashcards to JSON file"""
         try:
-            os.makedirs(os.path.dirname(FLASHCARDS_PATH), exist_ok=True)
+            # Convert cards to a list of dictionaries with error handling
+            card_dicts = []
+            for card in self.cards:
+                try:
+                    card_dict = card.to_dict()
+                    card_dicts.append(card_dict)
+                except Exception as card_error:
+                    print(f"Error converting card to dict: {card_error}")
+                    # Optionally, print the card's attributes to understand what's wrong
+                    print(f"Card attributes: {vars(card)}")
             
-            with open(FLASHCARDS_PATH, "w") as f:
-                json.dump([card.to_dict() for card in self.cards], f, indent=2)
-            print(f"Saved {len(self.cards)} flashcards")
+            # Save with explicit encoding and error handling
+            with open(FLASHCARDS_PATH, "w", encoding="utf-8") as f:
+                json.dump(card_dicts, f)
+            
+            print(f"Saved {len(card_dicts)} flashcards")
             
         except Exception as e:
             print(f"Error saving flashcards: {e}")

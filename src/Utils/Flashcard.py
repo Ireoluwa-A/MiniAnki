@@ -9,6 +9,9 @@ class Flashcard:
         self.interval = interval
         self.last_review = last_review
         self.review_count = review_count
+        self.question_label = None
+        self.pinyin_label = None
+        self.english_label = None
 
     def __str__(self):
         return f"Hanzi: {self.hanzi}\nPinyin: {self.pinyin}\nEnglish: {self.english}"

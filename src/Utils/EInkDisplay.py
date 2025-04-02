@@ -72,7 +72,6 @@ class EInkDisplay:
             print(f"Error loading font: {e}")
            
             try:
-                from adafruit_bitmap_font import bitmap_font
                 self.font = bitmap_font.load_font("/fonts/Arial-12.bdf")
                 print("Fallback font loaded")
             except:
@@ -82,27 +81,34 @@ class EInkDisplay:
         """Clear all items from display group"""
         while len(self.group) > 0:
             self.group.pop()
+            print("Cleared display group")
     
     def refresh(self):
-        """Refresh the display using built-in timing"""
+        """
+        Refresh the display using built-in timing with periodic progress updates
+        """
         if not self.display:
             return False
         
-        # Refresh the display
-        print(f"Refreshing display (will take {self.display.time_to_refresh} seconds)...")
-        time.sleep(self.display.time_to_refresh)
-        self.display.refresh()
+        total_refresh_time = self.display.time_to_refresh
+        print(f"Total refresh time: {total_refresh_time} seconds")
         
+        elapsed_time = 0
+        while elapsed_time < total_refresh_time:
+            time.sleep(1)  # Sleep for 1 second
+            elapsed_time += 1
+            
+            remaining_time = total_refresh_time - elapsed_time
+            print(f"Refresh in progress: {elapsed_time} seconds elapsed, {remaining_time} seconds remaining")
+        
+        # Perform the actual display refresh
+        print("Refreshing display...")
+        self.display.refresh()
+        print("Display refresh complete")
         return True
     
-    def show_card(self, card, show_answer=False):
-        """Show a flashcard on the display"""
-        if not self.display or not self.font:
-            return False
-
-        # Clear the display
-        self._clear_display()
-        
+    def create_labels(self, card):
+        """Create labels for the flashcard"""
         # Create labels for the card
         question_label = label.Label(
             self.font, 
@@ -112,7 +118,7 @@ class EInkDisplay:
             y=30, 
             scale=2
         )
-        
+        print("question_label created")
         pinyin_label = label.Label(
             self.font, 
             text=card.pinyin, 
@@ -121,7 +127,7 @@ class EInkDisplay:
             y=60, 
             scale=1
         )
-        
+        print("pinyin_label created")
         english_label = label.Label(
             self.font, 
             text=card.english, 
@@ -130,11 +136,35 @@ class EInkDisplay:
             y=90, 
             scale=1
         )
+        print("english_label created")
+        return question_label, pinyin_label, english_label
+    
+    def show_card(self, card, show_answer=False):
+        """Show a flashcard on the display"""
+        print("E ink show card", card)
+        if not self.display or not self.font:
+            return False
+
+        # Clear the display
+        self._clear_display()
+        
+        # Create labels for the card
+        if not card.question_label or not card.pinyin_label or not card.answer_label:
+            question_label, pinyin_label, english_label = self.create_labels(card)
+            card.question_label = question_label
+            card.pinyin_label = pinyin_label
+            card.answer_label = english_label
+        else:
+            question_label = card.question_label
+            pinyin_label = card.pinyin_label
+            english_label = card.answer_label
+            print("Labels already created")
 
         if show_answer:
             self.group.append(question_label)
             self.group.append(pinyin_label)
             self.group.append(english_label)
+            print("show_answer is True")
         else:
             self.group.append(question_label)
         
